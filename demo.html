@@ -111,12 +111,73 @@
         		padding-right: 20px;
         		padding-left: 10px; 
         	}
+        	.font-size-button{
+        		background: none;
+        		border: 1px #8c8c8c solid;
+        		color: #fff;
+        		border-radius: 16px;
+        		padding: 5px 40px;
+        	}
+        	.child-mod button:nth-child(2){
+        		margin-right: 10px;
+        	}
+        	.bk-container{
+        		position: relative;
+        		width: 30px;
+        		height: 30px;
+        		background: #fff;
+        		border-radius: 15px;
+        		display: inline-block;
+        		vertical-align: -14px;
+        	}
+        	.bk-container-current{
+        		position: absolute;
+        		width: 32px;
+        		height: 32px;
+        		border-radius: 16px;
+        		border: 1px #ff7800 solid;
+        		display: inline-block;
+        		top: -2px;
+        		left: -2px;
+        	}
+        	.bk-container:nth-child(3){
+        		background: #000;
+        	}
+        	.bk-container:nth-child(4){
+        		background: #000;
+        	}
+        	.bk-container:nth-child(5){
+        		background: #000;
+        	}
+        	.bk-container:nth-child(6){
+        		background: #000;
+        	}
+        	.artical-action-mid{
+        		position: fixed;
+        		z-index: 10002;
+        		width: 100%;
+        		height: 40%;
+        		top: 30%;
+        	}
+        	.bottom-nav{
+        		position: fixed;
+        		bottom: 0px;
+        		height: 70px;
+        		background: #000;
+        		opacity: 0.9;
+        		width: 100%;
+        		z-index: 10000;
+        	}
 
         </style>
     </head>
     <body>
     <div id="root" class="container">
-    <div id="top-nav" class="top-nav">
+    <div class="m-artical-action">
+    <div class="artical-action-mid" id="action_mid">
+    </div>
+    </div>
+    <div id="top-nav" class="top-nav" style="display: none;">
     	<div class="icon-back"></div>
     	<div class="nav-title">返回书架</div>
     </div>
@@ -136,6 +197,7 @@
     			<li id="next_button">下一章</li>
     		</ul>
     	</div>
+    	
     	<div class="nav-pannel-bk"></div>
 
     	<div class="nav-pannel" id="font-container">
@@ -144,12 +206,19 @@
     		<button id="large-font" class="font-size-button">大</button>
     		<button id="small-font" class="font-size-button">小</button>
     	</div>
-    	<div class="child-mod">
+    	<div class="child-mod child-mod-2">
     		<span>背景</span>
     		<div class="bk-container">
     			<div class="bk-container-current"></div>
     		</div>
+    		<div class="bk-container"></div>
+    		<div class="bk-container"></div>
+    		<div class="bk-container"></div>
+    		<div class="bk-container"></div>
     	</div>
+    	</div>
+    	
+    	<div class="bottom-nav" style="display:none;">
     	</div>
     </div>
     <script src="lib/zepto.min.js"></script>
@@ -158,5 +227,69 @@
     </script>
     <script src="js/jQuery.base64.js"></script>
     <script src="js/jQuery.jsonp.js"></script>
+    <script>
+    //第一个方法，存储的封装
+    	(function(){
+    		var Util = (function(){
+    			var prefix = 'html5_reader_';
+    			//防止覆盖别人的key
+    			var StorageGetter = function(key){
+    				return localStorage.getItem(prefix + key);
+    			}
+    			var StorageSetter = function(key,val){
+    				return localStorage(prefix + key,val);
+    			}
+    			return {
+    				StorageGetter:StorageGetter,
+    				StorageSetter:StorageSetter
+    			}
+    		})();
+    		var Dom = {
+    			top_nav:$('#top-nav'),
+    			bottom_nav:$('.bottom-nav'),
+    			night_day_switch_button:$('#night-button')
+    		}
+    		var Win = $(window);
+    		var Doc = $(document);
+
+    		function main(){
+    			//todo 整个项目的入口函数
+    			EventHanlder();
+    		}
+    		function ReaderModel(){
+    			//todo 实现和阅读器相关的数据交互的方法
+    		}
+    		function ReaderBaseFrame(){
+    			//todo 渲染基本的UI结构
+    		}
+    		function EventHanlder(){
+    			//todo 交互的事件绑定
+    			//touch
+    			//zepto tap
+    			//4.0前 click 300ms延时
+    			//click tap
+    			$('#action_mid').click(function(event) {
+    				/* Act on the event */
+    				
+    				if (Dom.top_nav.css('display') == 'none') {
+    					Dom.bottom_nav.show();
+    					Dom.top_nav.show();
+    				}else{
+    					Dom.bottom_nav.hide();
+    					Dom.top_nav.hide();
+
+    				}
+    			});
+
+    			Win.scroll(function(){
+    				Dom.bottom_nav.hide();
+    				Dom.top_nav.hide();
+    			});
+    		}
+
+    		main();
+
+    	})();
+    </script>
     </body>
 </html>
