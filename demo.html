@@ -332,6 +332,7 @@
     				StorageSetter:StorageSetter
     			}
     		})();
+
     		//选择
     		var Dom = {
     			top_nav:$('#top-nav'),
@@ -342,10 +343,12 @@
                 bk_container:$('.bk-container'),
                 body:$('body'),
                 night_button:$('#night-button'),
+                night_button_text:$('#night-button span'),
                 nav_daynight_button:$('.nav-daynight-button')
     		}
     		var Win = $(window);
     		var Doc = $(document);
+            //初始化存储的字体，背景色，按钮状态
             //存储字体大小
     		var RootContainer = $('#fiction_container');
     		var initFontSize = Util.StorageGetter('font_size');
@@ -354,13 +357,16 @@
     			initFontSize = 14;
     		}
     		RootContainer.css('font-size',initFontSize);
-            //存储背景颜色
+            //存储背景颜色以及夜间按钮
             var initBackgroundColor = Util.StorageGetter('background_color');
             if (!initBackgroundColor) {
                 initBackgroundColor = '#e9dfc7';
             }
-            Dom.body.css('background-color',initBackgroundColor);
-
+            if (initBackgroundColor !== 'rgb(17, 17, 17)') {
+                Dom.body.css('background-color',initBackgroundColor);                
+            }else{
+                changeBkColor(1);
+            }
     		function main(){
     			//todo 整个项目的入口函数
     			var readerModel = ReaderModel();
@@ -372,6 +378,7 @@
                 });
     			EventHanlder();
     		}
+
     		function ReaderModel(){
     			//todo 实现和阅读器相关的数据交互的方法
     			//定义接口
@@ -408,6 +415,7 @@
     				init:init
     			}
     		}
+
     		function ReaderBaseFrame(container){
     			//todo 渲染基本的UI结构。初始化
                 //放入章节的数据
@@ -424,6 +432,22 @@
                     container.html(parseChapterData(data));
                 }
     		}
+
+            function changeBkColor(child_id){
+                    Dom.bk_container.empty();
+                    Dom.bk_container.eq(child_id).append('<div class="bk-container-current"></div>');
+                    initBackgroundColor = Dom.bk_container.eq(child_id).css('background-color');
+                    Dom.body.css('background',initBackgroundColor);
+                    Util.StorageSetter('background_color',initBackgroundColor);
+                    if (child_id ===1) {
+                        Dom.nav_daynight_button.addClass('daynight-current');
+                        Dom.night_button_text.html('白天');
+                    }else{
+                        Dom.nav_daynight_button.removeClass('daynight-current');
+                        Dom.night_button_text.html('夜间');
+                    }
+                }
+
     		function EventHanlder(){
     			//todo 交互的事件绑定
     			//touch
@@ -479,19 +503,6 @@
     			});
 
     			//todo 综合改变背景事件
-                var changeBkColor = function(child_id){
-                    Dom.bk_container.empty();
-                    Dom.bk_container.eq(child_id).append('<div class="bk-container-current"></div>');
-                    initBackgroundColor = Dom.bk_container.eq(child_id).css('background-color');
-                    Dom.body.css('background',initBackgroundColor);
-                    Util.StorageSetter('background_color',initBackgroundColor);
-                    if (initBackgroundColor =='#000') {
-                    	Dom.nav_daynight_button.addClass('daynight-current');
-                    }else{
-                    	Dom.nav_daynight_button.removeClass('daynight-current');
-                    }
-                }
-
                 Dom.bk_container.eq(0).click(function(){
                     // Dom.bk_container.empty();
                     // Dom.bk_container_child2.append('<div class="bk-container-current"></div>');
@@ -515,19 +526,11 @@
 
                 });
                 Dom.night_button.click(function() {
-    				//todo 夜间模式切换，触发背景切换事件即可
-    				
-    				if (initBackgroundColor !=='#fff') {
-    					
-    					changeBkColor(0);
-    				
-    				}else{
-    					changeBkColor(1);
-    					
-    					
-    				}
-    				
-
+                    if (initBackgroundColor !== 'rgb(17, 17, 17)') {
+                        changeBkColor(1);
+                    }else{
+                        changeBkColor(0);
+                    }
     			});
     		}
             
