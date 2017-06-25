@@ -348,6 +348,8 @@
     		}
     		var Win = $(window);
     		var Doc = $(document);
+            var readerModel;
+            var readerUI;
             //初始化存储的字体，背景色，按钮状态
             //存储字体大小
     		var RootContainer = $('#fiction_container');
@@ -369,8 +371,8 @@
             }
     		function main(){
     			//todo 整个项目的入口函数
-    			var readerModel = ReaderModel();
-                var readerUI = ReaderBaseFrame(RootContainer);
+    			readerModel = ReaderModel();
+                readerUI = ReaderBaseFrame(RootContainer);
 
     			readerModel.init(function(data){
                     readerUI(data);
@@ -382,6 +384,7 @@
     			//todo 实现和阅读器相关的数据交互的方法
     			//定义接口
     			var Chapter_id; 
+                var ChapterTotal;
     			var init = function(UIcallback){
     				getFictionInfo(function(){
     					getCurChapterContent(Chapter_id,function(data){
@@ -394,6 +397,7 @@
     				$.get('data/chapter.json',function(data){
     					//todo 获得章节信息后的回调
     					Chapter_id = data.chapters[1].chapter_id;
+                        chapterTotal = data.chapters.length;
     					callback && callback(data);
     				},'json');
     			}
@@ -410,8 +414,28 @@
     					}
     				},'json')
     			}
+                var prevChapter = function(UIcallback){
+                    Chapter_id = parseInt(Chapter_id,10);//10进制
+                    if (Chapter_id ==0) {
+                        return;
+                    }
+                    Chapter_id -= 1;
+                    getCurChapterContent(Chapter_id,UIcallback);
+
+                }
+                var nextChapter = function(UIcallback){
+                    Chapter_id = parseInt(Chapter_id,10);//10进制
+                    if (Chapter_id == chapterTotal) {
+                        return;
+                    }
+                    Chapter_id += 1;
+                    getCurChapterContent(Chapter_id,UIcallback);
+
+                }
     			return{
-    				init:init
+    				init:init,
+                    prevChapter:prevChapter,
+                    nextChapter:nextChapter
     			}
     		}
 
@@ -531,6 +555,19 @@
                         changeBkColor(0);
                     }
     			});
+                $('#prev_button').click(function() {
+                    //todo 获得章节翻页数据，数据渲染
+                    readerModel.prevChapter(function(data){
+                        readerUI(data);
+                    });
+                });
+                $('#next_button').click(function() {
+                    //todo 获得章节翻页数据，数据渲染
+                    readerModel.nextChapter(function(data){
+                        readerUI(data);
+
+                    });
+                });
     		}
             
 
