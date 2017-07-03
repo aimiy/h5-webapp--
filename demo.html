@@ -392,10 +392,14 @@
     			var getFictionInfo = function(callback){
     				$.get('data/chapter.json',function(data){
     					//todo 获得章节信息后的回调
+<<<<<<< HEAD
                         Chapter_id = Util.StorageGetter('last_chapter_id');
                         if (Chapter_id == null) {
                             Chapter_id = data.chapters[1].chapter_id;
                         }
+=======
+    					Chapter_id = data.chapters[1].chapter_id;
+>>>>>>> 74ee32868ca23368baf0730a35b0a645582068d5
                         chapterTotal = data.chapters.length;
     					callback && callback(data);
     				},'json');
@@ -420,7 +424,10 @@
                     }
                     Chapter_id -= 1;
                     getCurChapterContent(Chapter_id,UIcallback);
+<<<<<<< HEAD
                     Util.StorageSetter('last_chapter_id',Chapter_id);
+=======
+>>>>>>> 74ee32868ca23368baf0730a35b0a645582068d5
 
                 }
                 var nextChapter = function(UIcallback){
@@ -430,7 +437,10 @@
                     }
                     Chapter_id += 1;
                     getCurChapterContent(Chapter_id,UIcallback);
+<<<<<<< HEAD
                     Util.StorageSetter('last_chapter_id',Chapter_id);
+=======
+>>>>>>> 74ee32868ca23368baf0730a35b0a645582068d5
 
                 }
     			return{
@@ -566,14 +576,19 @@
                     //todo 获得章节翻页数据，数据渲染
                     readerModel.nextChapter(function(data){
                         readerUI(data);
+<<<<<<< HEAD
 
                     });
                 });
     		}
             
+=======
+>>>>>>> 74ee32868ca23368baf0730a35b0a645582068d5
 
+                    });
+                });
+    		}
     		main();//调用入口函数
-
     	})();
     </script>
     </body>

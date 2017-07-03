@@ -3,11 +3,17 @@
 <head>
 	<meta charset="UTF-8">
 	<title>默写</title>
+    <style>
+    p{
+        text-indent: 2em;
+    }
+
+    </style>
 </head>
 <body>
-	<h4></h4>
+	<h4>这是标题</h4>
 	<div class="content">
-
+这里是内容
 	</div>
 
     <script src="lib/zepto.min.js"></script>
@@ -19,9 +25,8 @@
     <script>
     (function(){
         var Util = (function(){
-            var getBSONP = function(){
-                if (data.result ==0) {
-                    var url = data.jsonp;
+            var getBSONP = function(url,callback){
+                
                     return $.jsonp({
                         url :url,
                         cache:true,
@@ -29,62 +34,87 @@
                         success:function(result){
                             var data = $.base64.decode(result);
                             var json = decodeURIComponent(escape(data));
-                            // console.log(json);
-                            // var jsonObj = JSON.parse(json);
-                            // var title = jsonObj.t;
-                            // var content = jsonObj.p[0];
-                            // console.log(content);
-                            // Dom.titleh4.html(title);
-                            // Dom.contentdiv.html(content);
-                            callback &&callback(json);
+                            callback(json);
                         }
                     })
-                }
-
+                
             }
+            return{
+                getBSONP:getBSONP,
+            }
+
         })();
+        var body = $('body');
 
     	var Dom = {
     		titleh4:$('h4'),
     		contentdiv:$('.content')
     	}
-    	var main = function(){
-    		ReaderModel();
-            
+
+    	function main(){
+    		var Readermodel = ReaderModel();
+            var readerUI = ReaderBaseFrame(body);
+            Readermodel.init(function(data){
+                readerUI(data);
+            });
+
     	}
-
-
         //todo获取文章综合
         function ReaderModel(){
-
         //todo 定义获得章节
+        ////使用总
+        var Chapter_id; 
+        var init = function(callback){
+                    getFictionInfo(function(){
+                        getCurChapterContent(Chapter_id,function(data){
+                        callback && callback(data);
+                        });
+                    })
+                }
         var getFictionInfo = function(callback){
             $.get("data/chapter.json",function(data){
+                console.log(data);
                 Chapter_id = data.chapters[1].chapter_id;
                 callback && callback(data);
             })
         }
-        //todo 定义获得文章
+        // //todo 定义获得文章并解码
         var getCurChapterContent = function(chapter_id,callback){
             $.get("data/data"+chapter_id+".json",function(data){
-                
+                //解码函数
+                console.log(data);
+                if (data.result ==0) {
+                    var url = data.jsonp;
+                    Util.getBSONP(url,function(data){
+                    callback &&callback(data);
+                    //此为渲染回调函数
+                });
+                }                  
             })
         }
-        //使用总
-        var Chapter_id; 
-                var init = function(){
-                    getFictionInfo(function(){
-                        getCurChapterContent(Chapter_id,function(data){
-
-                            console.log(data);
-                        });
-                    })
-                }
-                init();
         //todo 渲染显示
-
-
+        return {
+            init:init
         }
+        }
+
+        function ReaderBaseFrame(container){
+                //todo 渲染基本的UI结构。初始化
+                //放入章节的数据
+                function parseChapterData(jsonData){
+                    //调用json的parse方法，使字符串序列化
+                    var jsonObj = JSON.parse(jsonData);
+                    var html = '<h4>' + jsonObj.t + '</h4>';
+                    for(var i=0;i<jsonObj.p.length;i++){
+                        html += "<p>" + jsonObj.p[i] + '</p>';
+                    }
+                    return html;
+                }
+                return function(data){
+                    container.html(parseChapterData(data));
+                }
+            }
+
 		main();
     })();
     </script>
