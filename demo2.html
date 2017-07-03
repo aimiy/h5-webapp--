@@ -298,6 +298,7 @@
     <script>
     //闭包
     	(function(){
+    		'use strict';//声明了才能使用ES6的方法
     		//第一个方法，存储的封装
     		var Util = (function(){
     			var prefix = 'html5_reader_';
@@ -385,38 +386,81 @@
     			//todo 实现和阅读器相关的数据交互的方法
     			//定义接口
     			var Chapter_id; 
-                var ChapterTotal;
+                var chapterTotal;
     			var init = function(UIcallback){
-    				getFictionInfo(function(){
-    					getCurChapterContent(Chapter_id,function(data){
-    						//todo 渲染问题
-                            UIcallback && UIcallback(data);
-    					});
+    				// getFictionInfo(function(){
+    				// 	getCurChapterContent(Chapter_id,function(data){
+    				// 		//todo 渲染问题
+        //                     UIcallback && UIcallback(data);
+    				// 	});
+    				// })
+    				getFictionInfoPromise().then(function(d){
+    				return getCurChapterContentPromise();
+    				}).then(function(data){
+    					UIcallback && UIcallback(data);
     				})
-    			}
-    			var getFictionInfo = function(callback){
+    			};
+    			// var getFictionInfo = function(callback){
+    			// 	$.get('data/chapter.json',function(data){
+    			// 		//todo 获得章节信息后的回调
+       //                  Chapter_id = Util.StorageGetter('last_chapter_id');
+       //                  if (Chapter_id == null) {
+       //                      Chapter_id = data.chapters[1].chapter_id;
+       //                  }
+       //                  chapterTotal = data.chapters.length;
+    			// 		callback && callback(data);
+    			// 	},'json');
+    			// }
+    			var getFictionInfoPromise = function(){
+
+    			 return new Promise(function(resolve,reject){
     				$.get('data/chapter.json',function(data){
     					//todo 获得章节信息后的回调
-                        Chapter_id = Util.StorageGetter('last_chapter_id');
+    					if (data.result ==0) {
+    						Chapter_id = Util.StorageGetter('last_chapter_id');
                         if (Chapter_id == null) {
                             Chapter_id = data.chapters[1].chapter_id;
                         }
                         chapterTotal = data.chapters.length;
-    					callback && callback(data);
+                        resolve();
+                    }else{
+                    	reject();
+                    }
     				},'json');
-    			}
-    			var getCurChapterContent = function(chapter_id,callback){
-    				$.get('data/data'+chapter_id+'.json',function(data){
+                    });
+    			 }
+
+    			// var getCurChapterContent = function(chapter_id,callback){
+    			// 	$.get('data/data'+chapter_id+'.json',function(data){
+    			// 		//判断服务器状态，约定的0为ok
+    			// 		if(data.result == 0){
+    			// 			//获取的json地址
+    			// 			var url = data.jsonp;
+    			// 			//获取数据并解码，封装起来这一部分比较好
+    			// 			Util.getBSONP(url,function(data){
+    			// 				callback &&callback(data);
+    			// 			});
+    			// 		}
+    			// 	},'json')
+    			// }
+    			var getCurChapterContentPromise = function(){
+    			return new Promise(function(resolve,reject){
+    				$.get('data/data'+Chapter_id+'.json',function(data){
     					//判断服务器状态，约定的0为ok
     					if(data.result == 0){
     						//获取的json地址
     						var url = data.jsonp;
     						//获取数据并解码，封装起来这一部分比较好
     						Util.getBSONP(url,function(data){
-    							callback &&callback(data);
+    							resolve(data);
+    							
     						});
+    					}else{
+    						reject({msg:'fail'});
     					}
     				},'json')
+
+    			});
     			}
                 var prevChapter = function(UIcallback){
                     Chapter_id = parseInt(Chapter_id,10);//10进制
