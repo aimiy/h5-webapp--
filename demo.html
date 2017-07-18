@@ -391,15 +391,13 @@
     			}
     			var getFictionInfo = function(callback){
     				$.get('data/chapter.json',function(data){
+    				    console.log(data);
     					//todo 获得章节信息后的回调
-
                         Chapter_id = Util.StorageGetter('last_chapter_id');
                         if (Chapter_id == null) {
                             Chapter_id = data.chapters[1].chapter_id;
                         }
-
     					Chapter_id = data.chapters[1].chapter_id;
-
                         chapterTotal = data.chapters.length;
     					callback && callback(data);
     				},'json');
@@ -577,9 +575,7 @@
     		}
             
 
-                    });
-                });
-    		}
+
     		main();//调用入口函数
     	})();
     </script>
