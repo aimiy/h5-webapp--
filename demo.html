@@ -304,7 +304,7 @@
     				return localStorage.setItem(prefix + key,val);
     			}
     			var getBSONP = function(url,callback){
-    				//插件提供的功能
+    				
     				return $.jsonp({
     					url :url,
     					cache:true,
@@ -366,7 +366,7 @@
                 changeBkColor(1);
             }
     		function main(){
-    			//todo 整个项目的入口函数
+    			//整个项目的入口函数
     			readerModel = ReaderModel();
                 readerUI = ReaderBaseFrame(RootContainer);
 
@@ -377,14 +377,14 @@
     		}
 
     		function ReaderModel(){
-    			//todo 实现和阅读器相关的数据交互的方法
+    			//实现和阅读器相关的数据交互的方法
     			//定义接口
     			var Chapter_id; 
                 var ChapterTotal;
     			var init = function(UIcallback){
     				getFictionInfo(function(){
     					getCurChapterContent(Chapter_id,function(data){
-    						//todo 渲染问题
+    						//渲染
                             UIcallback && UIcallback(data);
     					});
     				})
@@ -392,7 +392,7 @@
     			var getFictionInfo = function(callback){
     				$.get('data/chapter.json',function(data){
     				    console.log(data);
-    					//todo 获得章节信息后的回调
+    					//获得章节信息后的回调
                         Chapter_id = Util.StorageGetter('last_chapter_id');
                         if (Chapter_id == null) {
                             Chapter_id = data.chapters[1].chapter_id;
@@ -442,7 +442,7 @@
     		}
 
     		function ReaderBaseFrame(container){
-    			//todo 渲染基本的UI结构。初始化
+    			//渲染基本的UI结构。初始化
                 //放入章节的数据
                 function parseChapterData(jsonData){
                     //调用json的parse方法，使字符串序列化
@@ -474,7 +474,7 @@
                 }
 
     		function EventHanlder(){
-    			//todo 交互的事件绑定
+    			//交互的事件绑定
     			//touch
     			//zepto tap
     			//4.0前 click 300ms延时
@@ -527,7 +527,7 @@
     				Dom.nav_font_family.removeClass('font-current');
     			});
 
-    			//todo 综合改变背景事件
+    			//综合改变背景事件
                 Dom.bk_container.eq(0).click(function(){
                     // Dom.bk_container.empty();
                     // Dom.bk_container_child2.append('<div class="bk-container-current"></div>');
@@ -558,13 +558,13 @@
                     }
     			});
                 $('#prev_button').click(function() {
-                    //todo 获得章节翻页数据，数据渲染
+                    //获得章节翻页数据，数据渲染
                     readerModel.prevChapter(function(data){
                         readerUI(data);
                     });
                 });
                 $('#next_button').click(function() {
-                    //todo 获得章节翻页数据，数据渲染
+                    //获得章节翻页数据，数据渲染
                     readerModel.nextChapter(function(data){
                         readerUI(data);
 
