@@ -10,6 +10,7 @@ var app = new koa();
 var server = {
   port:3001
 };
+
 app.use(views(__dirname + '/view', {
   map: {
     html: 'ejs' // 用ejs渲染页面
@@ -21,6 +22,17 @@ app.use(koa_static({
   rootPath:'/static/',
     maxage:0 // 缓存
   }))
+
+app.use(async (ctx, next) => {
+  ctx.set('Content-Type', 'application/json');
+  ctx.set("Access-Control-Allow-Origin", "*");
+  ctx.set("Access-Control-Allow-Methods", "OPTIONS, GET, PUT, POST, DELETE");
+  await next();
+});
+
+app.use(controller.get('/api_index',(ctx) => {
+  ctx.response.body = service.get_index_data();
+}));
 
 app.use(controller.get('/',(ctx) => {
   ctx.response.type = 'application/json';
@@ -54,8 +66,12 @@ app.use(controller.get('/book',(ctx) => {
   return ctx.render('book');
 }));
 
-app.use(controller.get('/api_index',(ctx) => {
-  ctx.response.body = service.get_index_data();
+app.use(controller.get('/ajax/test',(ctx)=>{
+  ctx.response.body = JSON.parse(service.get_test_data());
+}));
+
+app.use(controller.get('/ajax/test123',(ctx)=>{
+  ctx.response.body = JSON.parse(service.get_test_data());
 }));
 
 app.use(controller.get('/ajax/book',(ctx) => {
