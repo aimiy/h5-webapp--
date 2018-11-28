@@ -1,6 +1,7 @@
 var koa = require('koa');
 var controller = require('koa-route');
 
+var views = require('koa-views'); // koa的中间件
 var koa_static = require('koa-static-server') // 关于静态文件的请求
 var service = require('./service/webAppService.js');
 var qs = require('querystring');
@@ -9,6 +10,12 @@ var app = new koa();
 var server = {
   port:3001
 };
+
+app.use(views(__dirname + '/view', {
+  map: {
+    html: 'ejs' // 用ejs渲染页面
+  }
+}));
 
 app.use(koa_static({
   rootDir:'./static/',
@@ -24,7 +31,6 @@ app.use(async (ctx, next) => {
 });
 
 app.use(controller.get('/api_index',(ctx) => {
-  ctx.state = {title: '书城'};
   ctx.response.body = service.get_index_data();
 }));
 

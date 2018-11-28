@@ -1,6 +1,10 @@
 // 让后端的一些数据经过原始转换，提交给前端
-
 var fs = require('fs');
+exports.get_index_data = ()=>{
+    var content = fs.readFileSync('./mock/home.json','utf-8');
+    return content;
+}
+
 exports.get_test_data = ()=>{
     var content = fs.readFileSync('./mock/test.json','utf-8');
     return content;
@@ -12,10 +16,7 @@ exports.get_book_data = (id)=>{
     var content = fs.readFileSync('./mock/book/' + id +'.json','utf-8');
     return content;
 };
-exports.get_index_data = ()=>{
-    var content = fs.readFileSync('./mock/home.json','utf-8');
-    return content;
-}
+
 exports.get_search_data = (start,end,keyword)=>{
     return new Promise((resolve,reject) => {
         var http = require('http');
@@ -26,7 +27,6 @@ exports.get_search_data = (start,end,keyword)=>{
             end:end
         }
         var content = qs.stringify(data);
-        console.log(content);
         var http_request = {
             hostname:'dushu.xiaomi.com',
             port:80,
