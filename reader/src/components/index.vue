@@ -1,10 +1,10 @@
 <template>
   <div class="hello">
-    <swiper v-if="msg" :info='msg[0]'/>
+    <!-- <swiper v-if="msg" :info='msg[0]'/>
     <list :count=3 :info='msg[1]'/>
     <div v-for="item in msg">
       {{item.ad_name}}
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -20,7 +20,7 @@ export default {
     }
   },
   created(){
-    this.axios.get(this.baseUrl + 'api_index').then(result => {
+    this.axios.get(this.baseUrl + 'test').then(result => {
       this.msg = result.data.items;
     });
   },
