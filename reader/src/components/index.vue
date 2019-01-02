@@ -5,6 +5,7 @@
     <div v-for="item in msg">
       {{item.ad_name}}
     </div> -->
+    <img :src=(baseUrl+msg) alt="">
   </div>
 </template>
 
@@ -20,8 +21,8 @@ export default {
     }
   },
   created(){
-    this.axios.get(this.baseUrl + 'test').then(result => {
-      this.msg = result.data.items;
+    this.axios.get(this.baseUrl + 'img').then(result => {
+      this.msg = result.data;
     });
   },
   components:{
